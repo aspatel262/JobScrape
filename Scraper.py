@@ -26,6 +26,24 @@ class Company:
         
         job_elements = soup.find_all(self.scrape_protocol[0], class_=self.scrape_protocol[1])
         
+        current_postings = []
+        for job_element in job_elements:
+            title_tag = job_element.find('h3')
+            title = title_tag.get_text(strip=True) if title_tag else 'N/A'
+            
+            company_tag = job_element.find('span', class_='RP7SMd')
+            company = company_tag.find('span').get_text(strip=True) if company_tag else 'N/A'
+            
+            location_tag = job_element.find('span', class_='r0wTof')
+            location = location_tag.get_text(strip=True) if location_tag else 'N/A'
+            
+            link_tag = job_element.find('a', href=True)
+            link = link_tag['href'] if link_tag else 'N/A'
+            
+            current_postings.append(JobPosting(title, f"{company} - {location}", link))
+        
+        return current_postings
+        
         return job_elements
 
 class Driver:
