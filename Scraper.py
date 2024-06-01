@@ -14,13 +14,20 @@ class JobPosting:
         self.location = location    # Posting location
         self.link = link # Posting link
  
+    def __eq__(self, other):
+        if isinstance(other, JobPosting):
+            return self.title == other.title and self.location == other.location and self.link == other.link
+        return False
+ 
+    def __repr__(self):
+        return f"JobPosting(title='{self.title}', location='{self.location}', link='{self.link}')"
 
 class Company:
 
     def __init__(self, site_link, scrape_protocol):
-        self.previous_postings = self.fetch_current_postings()  # Initial state of previous postings
         self.site_link = site_link  # Link to job site
         self.scrape_protocol = scrape_protocol  # Tuple with tag type and className for parsing -- can vary by site
+        self.previous_postings = self.fetch_current_postings()  # Initial state of previous postings
     
     def fetch_current_postings(self):
         response = requests.get(self.site_link)
