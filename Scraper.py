@@ -39,6 +39,8 @@ class Driver:
                 company.check_change()
             time.sleep(interval)
 
+    def notify(self):
+        print('New job posted!')
 
 # Example usage:
 
