@@ -16,9 +16,13 @@ class JobPosting:
 class Company:
 
     def __init__(self, site_link, scrape_protocol):
-        self.previous_postings = []  # Initial state of previous postings
+        self.previous_postings = self.fetch_current_postings()  # Initial state of previous postings
         self.site_link = site_link  # Link to job site
         self.scrape_protocol = scrape_protocol  # Tuple with tag type and className for parsing -- can vary by site
+    
+    def fetch_current_postings(self):
+        response = requests.get(self.site_link)
+        soup = BeautifulSoup(response.content, 'html.parser')
 
 class Driver:
 
