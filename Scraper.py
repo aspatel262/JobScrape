@@ -26,6 +26,9 @@ class Company:
         
         job_elements = soup.find_all(self.scrape_protocol[0], class_=self.scrape_protocol[1])
         
+        if not job_elements:
+            job_elements = self.fetch_dynamic_content()
+        
         current_postings = []
         for job_element in job_elements:
             title_tag = job_element.find('h3')
