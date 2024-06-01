@@ -23,11 +23,21 @@ class Company:
     def fetch_current_postings(self):
         response = requests.get(self.site_link)
         soup = BeautifulSoup(response.content, 'html.parser')
+        
+        job_elements = soup.find_all(self.scrape_protocol[0], class_=self.scrape_protocol[1])
+        
+        return job_elements
 
 class Driver:
 
     def __init__(self, companies):
         self.companies = companies  # Array of companies for driving protocol
+        
+    def start_checking(self, interval=1800):
+        while True:
+            for company in self.companies:
+                company.check_change()
+            time.sleep(interval)
 
 
 # Example usage:
