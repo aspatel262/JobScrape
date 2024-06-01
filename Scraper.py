@@ -72,6 +72,13 @@ class Company:
         driver.quit()
         
         return job_elements
+    
+    def check_change(self):
+        current_postings = self.fetch_current_postings()
+        if current_postings != self.previous_postings:
+            self.notify()
+            self.previous_postings = current_postings[-20:]  # Update the previous postings with the current
+
 
 class Driver:
 
