@@ -1,9 +1,11 @@
-import time
 import requests
 from bs4 import BeautifulSoup
-from threading import Timer
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+import time
 
- 
 
 class JobPosting:
 
@@ -46,6 +48,21 @@ class Company:
             current_postings.append(JobPosting(title, f"{company} - {location}", link))
         
         return current_postings
+    
+    def fetch_dynamic_content(self):
+        options = Options()
+        options.headless = True
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        driver.get(self.site_link)
+        time.sleep(5)  # Wait for JavaScript to load content
+
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        job_elements = soup.find_all(self.scrape_protocol[0], class_=self.scrape_protocol[1])
+        
+        driver.quit()
         
         return job_elements
 
@@ -70,4 +87,9 @@ if __name__ == "__main__":
     amazon = Company(site_link="https://www.amazon.jobs/content/en/career-programs/student-programs?country%5B%5D=US", scrape_protocol=('div','job-card-module_root__QYXVA'))
     capitalOne = Company(site_link="https://capitalone.wd1.myworkdayjobs.com/Capital_One?workerSubType=a12c70bf789e10572aab83c4780919ad", scrape_protocol=('li','css-1q2dra3'))
 
- 
+    
+    print(google.fetch_current_postings())
+    print("\n\n\n\n")
+    print(amazon.fetch_current_postings())
+    print("\n\n\n\n")
+    print(capitalOne.fetch_current_postings())
