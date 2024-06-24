@@ -7,11 +7,11 @@ import pandas as pd
 
 def send_email(subject, body):
 
-    client = boto3.client('ses', region_name='us-east-2')
+    client = boto3.client('ses', region_name='')
 
     response = client.send_email(
         Destination={
-            'ToAddresses': ["rupesh.seeth@gmail.com", "aspatel262@gmail.com"]
+            'ToAddresses': []
         },
         Message={
             'Body': {
@@ -25,7 +25,7 @@ def send_email(subject, body):
                 'Data': subject
             },
         },
-        Source='pyjobscraper@gmail.com'
+        Source=''
     )
 
     print(response)
