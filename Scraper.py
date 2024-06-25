@@ -9,9 +9,11 @@ import time
 from datetime import datetime
 
 class JobPosting:
-    def __init__(self, title, location, link):
-        self.title = title  # Posting title 
-        self.location = location  # Posting location
+
+    def __init__(self, name, title, location, link):
+        self.name = name
+        self.title = title  # Posting title
+        self.location = location    # Posting location
         self.link = link  # Posting link
 
     def __eq__(self, other):
@@ -20,7 +22,11 @@ class JobPosting:
         return False
 
     def __repr__(self):
-        return f"JobPosting(title='{self.title}', location='{self.location}', link='{self.link}')"
+        return f"JobPosting(name='{self.name}, title='{self.title}', location='{self.location}', link='{self.link}')"
+
+    def __hash__(self):
+        return hash((self.name, self.title, self.location, self.link))
+
 
 class Company:
     def __init__(self, site_link, scrape_protocol, recent_posting=None):
@@ -76,6 +82,14 @@ class Company:
     def check_change(self):
         current_postings = self.fetch_current_postings()
         new_postings = []
+        if current_postings != self.previous_postings:
+            new_postings = [
+                new_post for new_post in current_postings if new_post not in self.previous_postings
+            ]
+
+            self.notify()
+            # Update the previous postings with the current
+            self.previous_postings = current_postings[-20:]
 
         if self.recent_posting:
             for posting in current_postings:
@@ -97,6 +111,14 @@ class Company:
                 state = json.load(file)
         except FileNotFoundError:
             state = {}
+    def __init__(self, companies):
+        self.companies = companies  # Array of companies for driving protocol
+
+    def start_checking(self, interval=1800):
+        while True:
+            for company in self.companies:
+                company.check_change()
+            time.sleep(interval)
 
         state[self.site_link] = {
             'datetime': datetime.now().isoformat(),
@@ -139,3 +161,10 @@ if __name__ == "__main__":
 
     for company in companies:
         company.check_change()
+    # google = Company("google", site_link="https://www.google.com/about/careers/applications/jobs/results?employment_type=INTERN&location=United%20States&target_level=INTERN_AND_APPRENTICE", scrape_protocol=('div', "sMn82b"))
+    # amazon = Company(site_link="https://www.amazon.jobs/content/en/career-programs/student-programs?country%5B%5D=US",
+    # scrape_protocol=('div', 'job-card-module_root__QYXVA'))
+    capitalOne = Company(name="capital one", site_link="https://capitalone.wd1.myworkdayjobs.com/Capital_One?workerSubType=a12c70bf789e10572aab83c4780919ad",
+                         scrape_protocol=('li', 'css-1q2dra3'))
+
+    print(capitalOne.fetch_current_postings())
