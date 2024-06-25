@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Google",
+        "site_link": "https://www.google.com/about/careers/applications/jobs/results?employment_type=INTERN&location=United%20States&target_level=INTERN_AND_APPRENTICE",
+        "scrape_protocol": ["div", "sMn82b"]
+    },
+    {
+        "name": "Amazon",
+        "site_link": "https://www.amazon.jobs/content/en/career-programs/student-programs?country%5B%5D=US",
+        "scrape_protocol": ["div", "job-card-module_root__QYXVA"]
+    },
+    {
+        "name": "Capital One",
+        "site_link": "h",
+        "scrape_protocol": ["li", "css-1q2dra3"]
+    }
+]
